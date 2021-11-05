@@ -156,3 +156,94 @@ exports.resetPassword = async (req , res , next) => {
     }
    
 }
+
+exports.logoutUser = async (req , res , next) => {
+
+    try{
+        res.cookie('token' , null , {
+            expires: new Date(Date.now()) ,
+            httpOnly: true 
+        })
+
+        res.status(200).json({
+            success: true ,
+            message: 'Logged out'
+        })
+    } catch(error) {
+        console.log(error) ;
+    }
+}
+
+exports.deleteUser = async (req , res , next) => {
+    try{
+        const user = await User.findById(req.params.id) ;
+
+        if(!user) {
+            return next(new Error('user not found with the id you entered')) ;
+        }
+
+        await user.remove() ;
+
+        res.status(200).json({
+            success: true
+        }) ;
+
+    }catch(error) {
+        console.log(error) ;
+    }
+}
+
+exports.updateUser = async (req , res , next) => {
+    try{
+
+        const {email , username , role} = req.body ;
+
+        const user = await User.findById(req.params.id) ;
+
+        if(!user) {
+            return next(new Error('user not found')) ;
+        }
+
+        user.email = email? email : user.email ;
+        user.username = username? username : user.username ;
+        user.role = role? role : user.role ;
+
+        await user.save() ;
+
+        res.status(200).json({
+            message: 'successful' ,
+            user
+        })
+
+
+    }catch(error) {
+        console.log(error) ;
+    }
+}
+
+exports.updateProfile = async (req , res , next) => {
+    try{
+
+        const {email , username } = req.body ;
+
+        const user = await User.findById(req.params.id) ;
+
+        if(!user) {
+            return next(new Error('user not found')) ;
+        }
+
+        user.email = email? email : user.email ;
+        user.username = username? username : user.username ;
+
+        await user.save() ;
+
+        res.status(200).json({
+            message: 'successful' ,
+            user
+        })
+
+
+    }catch(error) {
+        console.log(error) ;
+    }
+}

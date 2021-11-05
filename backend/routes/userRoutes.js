@@ -10,5 +10,10 @@ route.get('/:id' , userController.getSingleUser) ;
 route.get('/' , userController.getAllUsers) ;
 route.post('/login' , userController.login) ;
 route.post('/forgotPassword', userController.forgotPassword) ;
-route.post('/resetPassword' , userController.resetPassword) ;
+route.post('/resetPassword/:token' , userController.resetPassword) ;
+route.post('/logout' , userController.logoutUser) ;
+route.delete('/remove/:id' , userController.deleteUser) ;
+route.put('/updateUser/:id' , userController.updateUser ) ;
+route.put('/updateProfile/:id' , userController.updateProfile ) ;
+
 module.exports = route ;
