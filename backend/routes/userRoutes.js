@@ -15,5 +15,6 @@ route.post('/logout' , userController.logoutUser) ;
 route.delete('/remove/:id' , userController.deleteUser) ;
 route.put('/updateUser/:id' , userController.updateUser ) ;
 route.put('/updateProfile/:id' , userController.updateProfile ) ;
+route.post('/send' , userController.testEmail) ;
 
 module.exports = route ;

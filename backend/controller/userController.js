@@ -2,6 +2,7 @@ const User = require('../models/userModel') ;
 const sendToken = require('../utils/jwtToken');
 const sendjwtToken = require('../utils/jwtToken') ;
 
+const sendEmail = require('../utils/sendEmail') ;
 const crypto = require('crypto') ;
 
 exports.createNewuser = async (req , res , next) => {
@@ -108,8 +109,8 @@ exports.forgotPassword = async(req , res , next) => {
 
         if(!resetToken) {
             return next(new Error('could not generate forgot password token')) ;
-
-        }
+ }
+         await new sendEmail(user , resetToken).sendPasswordReset() ;
 
         res.status(200).json({
             message: 'reset token generated successfully' ,
@@ -126,8 +127,8 @@ exports.forgotPassword = async(req , res , next) => {
 exports.resetPassword = async (req , res , next) => {
     try{
         console.log('This is reset password token') ;
-        console.log(req.query.token) ;
-        const resetPasswordToken = crypto.createHash('sha256').update(req.query.token).digest('hex')
+        console.log(req.params.token) ;
+        const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
 
         const user = await User.findOne({
             resetPasswordToken , 
@@ -244,6 +245,28 @@ exports.updateProfile = async (req , res , next) => {
 
 
     }catch(error) {
+        console.log(error) ;
+    }
+}
+
+
+exports.testEmail = async (req , res , next) => {
+    try{
+
+         console.log('trying to send email')
+        await new sendEmail({
+            email: "surafel097@outlook.com" ,
+            name: "Surafel Gizachew"
+        } , 'localhost:3000/api').sendPasswordReset() ;
+
+        res.status(200).json({
+            message: "successfully send message"
+        })
+
+    } catch(error) {
+        res.json({
+           error:  error.message
+        })
         console.log(error) ;
     }
 }
