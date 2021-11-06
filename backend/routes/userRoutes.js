@@ -4,10 +4,14 @@ const express = require('express') ;
 const route = express.Router() ;
 
 const userController = require('../controller/userController') ;
+const Authmiddleware = require('../middleware/auth')
 
 route.post('/' , userController.createNewuser) ;
 route.get('/:id' , userController.getSingleUser) ;
-route.get('/' , userController.getAllUsers) ;
+route.get('/' , 
+    Authmiddleware.AuthenticateUser , 
+    Authmiddleware.authorizeRoles('admin') ,
+    userController.getAllUsers) ;
 route.post('/login' , userController.login) ;
 route.post('/forgotPassword', userController.forgotPassword) ;
 route.post('/resetPassword/:token' , userController.resetPassword) ;

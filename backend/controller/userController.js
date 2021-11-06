@@ -89,7 +89,7 @@ exports.login = async (req , res , next) => {
         console.log(error.message) ;
         res.status(400).json({
             message: 'Error' ,
-            data: error
+            data: error.message
         })
     }
 }
