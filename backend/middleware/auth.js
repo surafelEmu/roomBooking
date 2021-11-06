@@ -6,6 +6,8 @@ exports.AuthenticateUser = async (req , res , next) => {
 
     
     const tok = req.headers.cookie ;
+    console.log(tok) ;
+    
     if(!tok) {
         return next(new Error('Login first to get access')) ;
     }

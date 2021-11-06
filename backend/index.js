@@ -4,6 +4,7 @@ const fileUpload = require('express-fileupload')
 
 const app = express() ;
 
+const hostRouter = require('./routes/hostRoutes') ;
 const userRouter = require('./routes/userRoutes') ;
 const errorMiddleware = require('./middleware/errors') ;
 
@@ -14,6 +15,7 @@ app.use(fileUpload({useTempFiles: true})) ;
 
 
 app.use('/api/v1/user' , userRouter )  ;
+app.use('/api/v1/host' , hostRouter)
 
 
 app.use(errorMiddleware) ;
