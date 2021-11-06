@@ -1,12 +1,12 @@
 const User = require('../models/userModel') ;
 const sendToken = require('../utils/jwtToken');
 const sendjwtToken = require('../utils/jwtToken') ;
-
 const sendEmail = require('../utils/sendEmail') ;
+const catchAsync = require('../middleware/catchAsyncErrors') ;
 const crypto = require('crypto') ;
 
-exports.createNewuser = async (req , res , next) => {
-    try{
+exports.createNewuser = catchAsync(async (req , res , next) => {
+   
         req.body.phone = req.body.phone * 1 ;
         const response = await User.create(req.body) ;
 
@@ -14,17 +14,13 @@ exports.createNewuser = async (req , res , next) => {
             message: 'successfully saved user' ,
             data: response
         })
-    }catch(error) {
-        res.json({
-            message: 'Error has occured' ,
-            error
-        })
-    }
+    
+    
 
-}
+})
 
-exports.getSingleUser = async (req , res , next) => {
-    try{    
+exports.getSingleUser = catchAsync(async (req , res , next) => {
+    
         console.log(req.params.id) ;
         const user = await User.findById(req.params.id) ;
         //console.log(user) ;
@@ -32,16 +28,11 @@ exports.getSingleUser = async (req , res , next) => {
             data: user
         })
 
-    }catch(error) {
-        res.status(400).json({
-            message: "error has occured" ,
-            error: error.message
-        })
-    }
-}
+    
+})
 
-exports.getAllUsers = async (req , res , next) => {
-    try{    
+exports.getAllUsers = catchAsync(async (req , res , next) => {
+   
         console.log(req.params.id) ;
         const user = await User.find() ;
         //console.log(user) ;
@@ -49,16 +40,11 @@ exports.getAllUsers = async (req , res , next) => {
             data: user
         })
 
-    }catch(error) {
-        res.status(400).json({
-            message: "error has occured" ,
-            error: error.message
-        })
-    }
-}
+    
+})
 
-exports.login = async (req , res , next) => {
-    try{
+exports.login = catchAsync( async (req , res , next) => {
+   
         const {email , password} = req.body ;
 
         if(!email || !password) {
@@ -85,19 +71,12 @@ exports.login = async (req , res , next) => {
         sendjwtToken(user , 200 , res) ;
 
       
-    }catch(error) {
-        console.log(error.message) ;
-        res.status(400).json({
-            message: 'Error' ,
-            data: error.message
-        })
-    }
-}
+    
+})
 
-exports.forgotPassword = async(req , res , next) => {
+exports.forgotPassword = catchAsync(async(req , res , next) => {
     const user = await User.findOne({email: req.body.email}) ;
-    try{
-        
+   
 
         if(!user) {
             return next(new Error('user is not found')) ;
@@ -110,6 +89,8 @@ exports.forgotPassword = async(req , res , next) => {
         if(!resetToken) {
             return next(new Error('could not generate forgot password token')) ;
  }
+ try{
+        
          await new sendEmail(user , resetToken).sendPasswordReset() ;
 
         res.status(200).json({
@@ -122,10 +103,10 @@ exports.forgotPassword = async(req , res , next) => {
         user.resetPasswordExpire = null ,
         console.log(error) ;
     }
-}
+})
 
-exports.resetPassword = async (req , res , next) => {
-    try{
+exports.resetPassword = catchAsync(async (req , res , next) => {
+   
         console.log('This is reset password token') ;
         console.log(req.params.token) ;
         const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
@@ -152,15 +133,12 @@ exports.resetPassword = async (req , res , next) => {
         await user.save() ;
 
         sendToken(user , 200 , res) ;
-    }catch(error) {
-        console.log(error)
-    }
+  
+})
+
+exports.logoutUser = catchAsync(async (req , res , next) => {
+
    
-}
-
-exports.logoutUser = async (req , res , next) => {
-
-    try{
         res.cookie('token' , null , {
             expires: new Date(Date.now()) ,
             httpOnly: true 
@@ -170,13 +148,11 @@ exports.logoutUser = async (req , res , next) => {
             success: true ,
             message: 'Logged out'
         })
-    } catch(error) {
-        console.log(error) ;
-    }
-}
+ 
+})
 
-exports.deleteUser = async (req , res , next) => {
-    try{
+exports.deleteUser = catchAsync(async (req , res , next) => {
+    
         const user = await User.findById(req.params.id) ;
 
         if(!user) {
@@ -189,13 +165,10 @@ exports.deleteUser = async (req , res , next) => {
             success: true
         }) ;
 
-    }catch(error) {
-        console.log(error) ;
-    }
-}
+ 
+})
 
-exports.updateUser = async (req , res , next) => {
-    try{
+exports.updateUser = catchAsync(async (req , res , next) => {
 
         const {email , username , role} = req.body ;
 
@@ -217,14 +190,10 @@ exports.updateUser = async (req , res , next) => {
         })
 
 
-    }catch(error) {
-        console.log(error) ;
-    }
-}
+})
 
-exports.updateProfile = async (req , res , next) => {
-    try{
-
+exports.updateProfile = catchAsync(async (req , res , next) => {
+   
         const {email , username } = req.body ;
 
         const user = await User.findById(req.params.id) ;
@@ -244,15 +213,12 @@ exports.updateProfile = async (req , res , next) => {
         })
 
 
-    }catch(error) {
-        console.log(error) ;
-    }
-}
+  
+})
 
 
-exports.testEmail = async (req , res , next) => {
-    try{
-
+exports.testEmail =  catchAsync(async (req , res , next) => {
+   
          console.log('trying to send email')
         await new sendEmail({
             email: "surafel097@outlook.com" ,
@@ -263,10 +229,5 @@ exports.testEmail = async (req , res , next) => {
             message: "successfully send message"
         })
 
-    } catch(error) {
-        res.json({
-           error:  error.message
-        })
-        console.log(error) ;
-    }
-}
+    
+})
