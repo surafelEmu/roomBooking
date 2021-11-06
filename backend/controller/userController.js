@@ -3,17 +3,35 @@ const sendToken = require('../utils/jwtToken');
 const sendjwtToken = require('../utils/jwtToken') ;
 const sendEmail = require('../utils/sendEmail') ;
 const catchAsync = require('../middleware/catchAsyncErrors') ;
+const ErrorHandler = require('../utils/errorHandler');
 const crypto = require('crypto') ;
+const cloudinary = require('cloudinary') ;
 
 exports.createNewuser = catchAsync(async (req , res , next) => {
    
-        req.body.phone = req.body.phone * 1 ;
-        const response = await User.create(req.body) ;
-
-        res.json({
-            message: 'successfully saved user' ,
-            data: response
+        console.log(req.files.avatar.tempFilePath)
+        const result = await cloudinary.v2.uploader.upload(req.files.avatar.tempFilePath , {
+            public_id: `${Date.now()}` ,
+            resource_type: "auto" ,
+            folder: 'avatars' ,
+            width: 150 ,
+            crop: "scale"
         })
+        console.log(result.public_id)
+
+        const { name, email, password , phone} = req.body;
+
+    const user = await User.create({
+        name,
+        email,
+        password,
+        phone,
+        avatar: {
+            public_id: result.public_id,
+            url: result.secure_url
+        }
+    })
+       sendToken(user , 200 , res) ;
     
     
 
@@ -178,9 +196,11 @@ exports.updateUser = catchAsync(async (req , res , next) => {
             return next(new Error('user not found')) ;
         }
 
+
         user.email = email? email : user.email ;
         user.username = username? username : user.username ;
         user.role = role? role : user.role ;
+
 
         await user.save() ;
 
@@ -204,6 +224,17 @@ exports.updateProfile = catchAsync(async (req , res , next) => {
 
         user.email = email? email : user.email ;
         user.username = username? username : user.username ;
+
+        if(req.files.avatar) {
+            const image_url = user.avatar.public_id ;
+
+            const res = await cloudinary.v2.uploader.destroy(image_url) ;
+
+            const result = await cloudinary.v2.uploader.upload(req.files.avatar.tempFilePath) ;
+
+            user.avatar.public_id = result.public_id ;
+            user.avatar.url = result.secure_url ;
+        }
 
         await user.save() ;
 
@@ -230,4 +261,22 @@ exports.testEmail =  catchAsync(async (req , res , next) => {
         })
 
     
+})
+
+exports.changePassword = catchAsync(async(req ,res ,next) => {
+
+    const user = await User.findById(req.user._id).select("+password") ;
+
+    
+    const isMatch = await user.comparePassword(req.body.oldPassword) ;
+    console.log(req.body.oldPassword)
+    if(!isMatch) {
+       return  next(new ErrorHandler('old password does not match with the entered one' , 400)) ;
+    }
+
+    user.password = req.body.password ;
+
+    await user.save() ;
+
+   sendToken(user , 200 , res) ;
 })
