@@ -73,7 +73,7 @@ exports.login = catchAsync( async (req , res , next) => {
 
         if(!user) {
             console.log('you have not regestered yet') ;
-            return next(new Error('you have not regestered yet')) ;
+            return next(new ErrorHandler('you have not regestered yet' , 400)) ;
         }
 
         console.log(user) ;
@@ -83,7 +83,7 @@ exports.login = catchAsync( async (req , res , next) => {
 
         if(!isPasswordMatched) {
             console.log('wrong password or email address')
-            return next(new Error('wrong password or email')) ;
+            return next(new ErrorHandler('wrong password or email' , 400)) ;
         }
 
         sendjwtToken(user , 200 , res) ;
@@ -97,7 +97,7 @@ exports.forgotPassword = catchAsync(async(req , res , next) => {
    
 
         if(!user) {
-            return next(new Error('user is not found')) ;
+            return next(new ErrorHandler('user is not found' , 400)) ;
         } 
 
         const resetToken = user.getResetPasswordToken() ;
@@ -105,7 +105,7 @@ exports.forgotPassword = catchAsync(async(req , res , next) => {
         await user.save({ validateBeforeSave: false})
 
         if(!resetToken) {
-            return next(new Error('could not generate forgot password token')) ;
+            return next(new ErrorHandler('could not generate forgot password token' , 400)) ;
  }
  try{
         
@@ -135,12 +135,12 @@ exports.resetPassword = catchAsync(async (req , res , next) => {
         }) ;
     
         if(!user) {
-            return next(new Error('password reset token invalid or expires')) ;
+            return next(new ErrorHandler('password reset token invalid or expires' , 400)) ;
 
         }
 
         if(req.body.password !== req.body.confirmPassword) {
-            return next(new Error('password does not match'))
+            return next(new ErrorHandler('password does not match' , 400))
         }
 
         user.password = req.body.password ;
@@ -174,7 +174,7 @@ exports.deleteUser = catchAsync(async (req , res , next) => {
         const user = await User.findById(req.params.id) ;
 
         if(!user) {
-            return next(new Error('user not found with the id you entered')) ;
+            return next(new ErrorHandler('user not found with the id you entered' , 400)) ;
         }
 
         await user.remove() ;
@@ -193,7 +193,7 @@ exports.updateUser = catchAsync(async (req , res , next) => {
         const user = await User.findById(req.params.id) ;
 
         if(!user) {
-            return next(new Error('user not found')) ;
+            return next(new ErrorHandler('user not found' , 400)) ;
         }
 
 
@@ -219,7 +219,7 @@ exports.updateProfile = catchAsync(async (req , res , next) => {
         const user = await User.findById(req.params.id) ;
 
         if(!user) {
-            return next(new Error('user not found')) ;
+            return next(new ErrorHandler('user not found' , 404)) ;
         }
 
         user.email = email? email : user.email ;
