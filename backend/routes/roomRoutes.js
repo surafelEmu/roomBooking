@@ -4,7 +4,7 @@ const express = require('express') ;
 
 const router = express.Router() ;
 
-router.route('/').get(roomController.getAllHosts) 
+router.route('/').get(roomController.getAllRooms) 
                 .post(roomController.createRoom) ;
 router.route('/:id').get(roomController.getSingleRoom)
                 .delete(roomController.deleteRoom)

@@ -1,25 +1,26 @@
 const catchAsync = require('../middleware/catchAsyncErrors');
 const Room = require('../models/roomModel') ;
 const cloudinary = require('cloudinary') ;
+const APIFeatures = require('../utils/apiFeatures');
 
 exports.createRoom = catchAsync(async (req , res , next) => {
-    let images = [] ;
+    // let images = [] ;
 
-    images.push(req.files.photos) ;
+    // images.push(req.files.photos) ;
     
-    let imagesLink = [] ;
-    for(let i = 0 ; i < images.length ; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i].tempFilePath , {
-            folder: 'room' ,
-        }) ;
+    // let imagesLink = [] ;
+    // for(let i = 0 ; i < images.length ; i++) {
+    //     const result = await cloudinary.v2.uploader.upload(images[i].tempFilePath , {
+    //         folder: 'room' ,
+    //     }) ;
 
-        imagesLink.push({
-            public_id: result.public_id ,
-            url: result.secure_url
-        })
-    }
+    //     imagesLink.push({
+    //         public_id: result.public_id ,
+    //         url: result.secure_url
+    //     })
+    // }
 
-    req.body.photos = imagesLink ;
+    // req.body.photos = imagesLink ;
 
     const room = await Room.create(req.body) ;
 
@@ -42,13 +43,26 @@ exports.getSingleRoom = catchAsync(async (req , res , next) => {
 
 })
 
-exports.getAllHosts = catchAsync(async (req , res , next) => {
+exports.getAllRooms = catchAsync(async (req , res , next) => {
 
-    console.log(req.params.id) ;
-    const room = await Room.find() ;
-    //console.log(host) ;
+    const resPerPage = 4 ;
+    const productCount = await Room.countDocuments();
+    console.log(productCount) ;
+    const apiFeatures = new APIFeatures(Room.find() , req.query)
+        .search() 
+        
+        let rooms = await apiFeatures.query ;
+        let filteredRoomCount = rooms.length ;
+
+        apiFeatures.pagination(resPerPage) ;
+        rooms = await apiFeatures.query ;
+
     res.status(200).json({
-        data: room
+        success: true ,
+        data: rooms ,
+        productCount ,
+        resPerPage ,
+        filteredRoomCount ,
     })
 
 
