@@ -20,7 +20,7 @@ const roomSchema = mongoose.Schema({
         required: true 
     } ,
     avaliable: {
-        type: boolean ,
+        type: Boolean ,
         default: true 
     } ,
     state: {
