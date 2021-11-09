@@ -19,21 +19,21 @@ const roomSchema = mongoose.Schema({
     //     type: String ,
     //     required: true 
     // } ,
-    // avaliable: {
-    //     type: Boolean ,
-    //     default: true 
-    // } ,
-    // state: {
-    //     type: String ,
-    //     enum: {
-    //         values: [
-    //             'active' ,
-    //             'pending' ,
-    //             'taken'
-    //         ]
-    //     } ,
-    //     default: 'active'
-    // } ,
+    avaliable: {
+        type: Boolean ,
+        default: true 
+    } ,
+    status: {
+        type: String ,
+        enum: {
+            values: [
+                'active' ,
+                'pending' ,
+                'taken'
+            ]
+        } ,
+        default: 'active'
+    } ,
     // bed_count: {
     //     type: Number ,
     //     default: 1
@@ -42,13 +42,13 @@ const roomSchema = mongoose.Schema({
     //     type: Number ,
     //     default: 1
     // } ,
-    // avaliable_date: {
-    //     type: Date
-    // } ,
-    // price: {
-    //     type: String ,
+    avaliable_date: {
+        type: Date
+    } ,
+    price: {
+        type: String ,
 
-    // } ,
+    } ,
     // photos: [
     //     {
     //         public_id: {
@@ -78,11 +78,11 @@ const roomSchema = mongoose.Schema({
     //         }
     //     }
     // ] ,
-    // host: {
-    //     type: mongoose.Schema.ObjectId ,
-    //     ref: 'host' ,
-    //     required: true 
-    // } ,
+    host: {
+        type: mongoose.Schema.ObjectId ,
+        ref: 'host' ,
+        required: true 
+    } ,
     // rating: {
     //     type: Number , 
     //     default: 0

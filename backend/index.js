@@ -7,6 +7,8 @@ const app = express() ;
 const hostRouter = require('./routes/hostRoutes') ;
 const userRouter = require('./routes/userRoutes') ;
 const roomRouter = require('./routes/roomRoutes') ;
+const reserveRouter = require('./routes/reservationRoute')
+
 const errorMiddleware = require('./middleware/errors') ;
 
 if(process.env.NODE_ENV !== 'PRODUCTION') require('dotenv').config({path: 'backend/config/config.env'}) ;
@@ -18,6 +20,7 @@ app.use(fileUpload({useTempFiles: true})) ;
 app.use('/api/v1/user' , userRouter )  ;
 app.use('/api/v1/host' , hostRouter) ;
 app.use('/api/v1/room' , roomRouter)  ;
+app.use('/api/v1/reserve' ,reserveRouter )
 
 app.use(errorMiddleware) ;
 

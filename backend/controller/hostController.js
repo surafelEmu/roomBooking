@@ -5,25 +5,25 @@ const ErrorHandler = require('../utils/errorHandler');
 
 exports.createHost = catchAsync( async (req , res , next) => {
 
-    let images = [] ;
+//     let images = [] ;
 
-    images.push(req.files.photos) ;
+//     images.push(req.files.photos) ;
 
-    let imagesLink = [] ;
+//     let imagesLink = [] ;
 
-    console.log(images[0].tempFilePath) ;
-    for(let i = 0 ; i < images.length; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i].tempFilePath , {
-            folder: 'hosts'
-        }) ;
+//     console.log(images[0].tempFilePath) ;
+//     for(let i = 0 ; i < images.length; i++) {
+//         const result = await cloudinary.v2.uploader.upload(images[i].tempFilePath , {
+//             folder: 'hosts'
+//         }) ;
 
-        imagesLink.push({
-            public_id: result.public_id ,
-            url: result.secure_url
-        })
-    }
+//         imagesLink.push({
+//             public_id: result.public_id ,
+//             url: result.secure_url
+//         })
+//     }
 
-   req.body.photos = imagesLink ;
+//    req.body.photos = imagesLink ;
 
     const host = await Host.create(req.body) ;
 
