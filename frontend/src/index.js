@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css'
 
-
+import { Provider } from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react' ;
 
 import {store , persistor} from './store' ;
@@ -13,9 +13,11 @@ import {store , persistor} from './store' ;
 
 ReactDOM.render(
   <React.StrictMode>
-    <PersistGate persistor= {persistor}>
+    <Provider store={store} >
+    {/* <PersistGate persistor= {persistor}>  */}
     <App />
-    </PersistGate>
+    {/* </PersistGate> */}
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

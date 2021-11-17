@@ -1,4 +1,4 @@
-import React  from 'react'
+import React , {useEffect}  from 'react'
 import './home.css'
 
 import Header from '../componets/header' ;
@@ -9,11 +9,26 @@ import Special from '../componets/special_offers';
 import Review from '../componets/review';
 import Blog from '../componets/blog' ;
 import Footer from '../componets/footer' ;
+
+import { getAllRooms } from '../actions/roomActions';
+
+import {useDispatch , useSelector} from 'react-redux'
+
+
 const Home = () => {
 
     // const contentStyle = {
     //    " background": 'url("assets/image/banner1.jpg")'
     // }
+    const {loading , rooms} = useSelector(state => state.rooms) ;
+    const dispatch = useDispatch() ;
+
+    const roomss = rooms ;
+    useEffect( () => {
+        console.log('this is from home') ;
+        console.log(rooms)
+        dispatch(getAllRooms()) ;
+    } , [dispatch ])
     return (
        <div> 
            <Header />
@@ -130,7 +145,9 @@ const Home = () => {
 </div>
 
 <div class="box-container">
-
+        {rooms.map(room => (
+            <Rooms key={room._id} image={room.photos[0].url} />
+        ))}
    <Rooms image="assets/image/product_img11.jpg"/>
    <Rooms image="assets/image/product_img10.jpg"/>
     <Rooms image="assets/image/product_img9.jpg"/>
