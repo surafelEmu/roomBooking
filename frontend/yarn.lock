@@ -9793,7 +9793,7 @@
     "classnames" "^2.2.1"
     "rc-util" "^5.2.1"
 
-"rc-slider@^9.6.5":
+"rc-slider@^9.7.4":
   "integrity" "sha512-pjLKLiDKiaL7/pNywfIBD+lDo5TtVo05KuIBSWEIoqu6FHh6IMWvthCiaODuYaVs3RLeF2nXOP5AjkD2Lt2Rwg=="
   "resolved" "https://registry.npmjs.org/rc-slider/-/rc-slider-9.7.4.tgz"
   "version" "9.7.4"

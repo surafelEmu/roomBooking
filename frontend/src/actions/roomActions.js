@@ -10,7 +10,7 @@ export const getAllRooms = (keyword = '', currentPage = 1, price=[0, 1000], cate
         }) ;
 
 
-        let link = `/api/v1/rooms`
+        let link = `/api/v1/room`
         //?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&ratings[gte]=${rating}`
 
         if (category) {

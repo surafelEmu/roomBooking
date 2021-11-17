@@ -1,21 +1,28 @@
-import React , {Fragment, useEffect}  from 'react'
+import React , {Fragment , useState, useEffect}  from 'react'
 import './home.css'
 
-import Header from '../componets/header' ;
-import Banner from '../componets/banner' ;
-import Rooms from '../componets/rooms' ;
-import Feautured  from '../componets/freutured_rooms';
-import Special from '../componets/special_offers';
-import Review from '../componets/review';
-import Blog from '../componets/blog' ;
-import Footer from '../componets/footer' ;
+import Header from '../componets/layout/header' ;
+import Banner from '../componets/layout/banner' ;
+import Rooms from '../componets/layout/rooms' ;
+import Feautured  from '../componets/layout/freutured_rooms';
+import Special from '../componets/layout/special_offers';
+import Review from '../componets/layout/review';
+import Blog from '../componets/layout/blog' ;
+import Footer from '../componets/layout/footer' ;
 import Loader from '../componets/layout/loader/Loader';
 import { getAllRooms } from '../actions/roomActions';
 
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
+
 import {useDispatch , useSelector} from 'react-redux'
 import { useAlert } from 'react-alert';
+import HeadBanner from '../componets/layout/HeadBanner';
 
-const Home = () => {
+const { createSliderWithTooltip } = Slider ;
+const Range = createSliderWithTooltip(Slider.Range)
+
+const Home = ({match}) => {
 
     // const contentStyle = {
     //    " background": 'url("assets/image/banner1.jpg")'
@@ -25,6 +32,13 @@ const Home = () => {
 
     const dispatch = useDispatch() ;
     const {loading , rooms , error} = useSelector(state => state.rooms) ;
+
+    const keyword = match.params.keyword
+
+    const [currentPage , setCurrentPage] = useState(1)
+    const [price , setPrice] = useState([1 , 1000])
+    const [catagory , setCatagory] = useState('') ;
+    const [rating , setRating] = useState(0) ;
 
     useEffect( () => {
         
@@ -42,95 +56,78 @@ const Home = () => {
             {loading ? <Loader />:(
         <Fragment>       <div> 
            <Header />
-<section class="home" id="home">
-
-<div class="swiper home-slider">
-
-    <div class="swiper-wrapper">
-
-        <div class="swiper-slide slide" 
-        //style={{contentStyle}}
-        >   
-
-<form class="card">
-								<div class="form-group">
-									<span class="form-label">Your Destination</span>
-									<input class="form-control" type="text" placeholder="Enter a destination or hotel name" />
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<span class="form-label">Check In</span>
-											<input class="form-control" type="date" required />
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<span class="form-label">Check out</span>
-											<input class="form-control" type="date" required />
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-4">
-										<div class="form-group">
-											<span class="form-label">Rooms</span>
-											<select class="form-control">
-												<option>1</option>
-												<option>2</option>
-												<option>3</option>
-											</select>
-											<span class="select-arrow"></span>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="form-group">
-											<span class="form-label">Adults</span>
-											<select class="form-control">
-												<option>1</option>
-												<option>2</option>
-												<option>3</option>
-											</select>
-											<span class="select-arrow"></span>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="form-group">
-											<span class="form-label">Children</span>
-											<select class="form-control">
-												<option>0</option>
-												<option>1</option>
-												<option>2</option>
-											</select>
-											<span class="select-arrow"></span>
-										</div>
-									</div>
-								</div>
-								<div class="form-btn">
-									<button class="btn">Check Avaliablity</button>
-								</div>
-							</form>
-            {/* <div class="content">
-                <span>upto 50% off</span>
-                <h3>5star Hotels</h3>
-                <a href="#" class="btn">Book now</a>
-            </div> */}
-        </div>
-
-       
-    </div>
-
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-
-</div>
-
-</section>
+           <HeadBanner />
 
 {/* home section ends */}
 
 {/* banner section starts  */}
+{keyword ? (
+                                <Fragment>
+                                    <div class="col-6 col-md-3 mt-5 mb-5">
+                                        <div class="px-5">
+                                            <Range
+                                                marks={{
+                                                    1: `$1`,
+                                                    1000: `$1000`
+                                                }}
+                                                min={1}
+                                                max={1000}
+                                                defaultValue={[1, 1000]}
+                                                tipFormatter={value => `$${value}`}
+                                                tipProps={{
+                                                    placement: "top",
+                                                    visible: true
+                                                }}
+                                                value={price}
+                                                onChange={price => setPrice(price)}
+                                            />
 
+                                            <hr class="my-5" />
+
+
+                                            <hr class="my-3" />
+
+                                            <div class="mt-5">
+                                                <h4 class="mb-3">
+                                                    Ratings
+                                                </h4>
+
+                                                <ul class="pl-0">
+                                                    {[5, 4, 3, 2, 1].map(star => (
+                                                        <li
+                                                            style={{
+                                                                cursor: 'pointer',
+                                                                listStyleType: 'none'
+                                                            }}
+                                                            key={star}
+                                                            onClick={() => setRating(star)}
+                                                        >
+                                                            <div class="rating-outer">
+                                                                <div class="rating-inner"
+                                                                    style={{
+                                                                        width: `${star * 20}%`
+                                                                    }}
+                                                                >
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    
+                            <div class="box-container">
+                                {rooms.map(room => (
+                                     <Rooms key={room._id} data={room} />
+                                     ))}
+   
+                            </div>
+                                </Fragment>
+                            ) : (
+<Fragment >
 <section class="banner-container">
 <Banner image="assets/image/banner2.jpg"/>
 <Banner image="assets/image/banner3.jpg" />
@@ -292,7 +289,12 @@ const Home = () => {
 {/* footer section starts  */}
 
     <Footer />
+    </Fragment>
+    )
+    }
+   
 </div>
+
 </Fragment>
 )}
 </Fragment>
