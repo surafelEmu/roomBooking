@@ -1,4 +1,4 @@
-const rooms = ({image}) => {
+const rooms = ({data}) => {
     return (
         <div class="box" data-item="featured">
         <div class="icons">
@@ -8,13 +8,12 @@ const rooms = ({image}) => {
             <a href="#" class="fas fa-eye"></a>
         </div>
         <div class="image">
-            <img src={image} alt=""/>
+            <img src={data.photos[0].url} alt=""/>
         </div>
         <div class="content">
-            <h3>product name</h3>
+            <h3>{data.name}</h3>
             <div class="price">
-                <div class="amount">$20.00</div>
-                <div class="cut">$25.00</div>
+                <div class="amount">${data.price}</div>
                 <div class="offer">20% off</div>
             </div>
             <div class="stars">

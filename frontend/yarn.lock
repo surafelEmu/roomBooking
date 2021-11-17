@@ -9837,7 +9837,7 @@
   "resolved" "https://registry.npmjs.org/react-alert-template-basic/-/react-alert-template-basic-1.0.2.tgz"
   "version" "1.0.2"
 
-"react-alert@^7.0.2":
+"react-alert@^7.0.3":
   "integrity" "sha512-cZ2ZhxytECTxljDfBKpQmwWbfJQFzFf2Qf03L/IB5shbEXtWhDD2JjiW60rwmKT1oZoU+GEnUQw5MFM5+f0B6A=="
   "resolved" "https://registry.npmjs.org/react-alert/-/react-alert-7.0.3.tgz"
   "version" "7.0.3"

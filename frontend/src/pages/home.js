@@ -1,4 +1,4 @@
-import React , {useEffect}  from 'react'
+import React , {Fragment, useEffect}  from 'react'
 import './home.css'
 
 import Header from '../componets/header' ;
@@ -9,28 +9,38 @@ import Special from '../componets/special_offers';
 import Review from '../componets/review';
 import Blog from '../componets/blog' ;
 import Footer from '../componets/footer' ;
-
+import Loader from '../componets/layout/loader/Loader';
 import { getAllRooms } from '../actions/roomActions';
 
 import {useDispatch , useSelector} from 'react-redux'
-
+import { useAlert } from 'react-alert';
 
 const Home = () => {
 
     // const contentStyle = {
     //    " background": 'url("assets/image/banner1.jpg")'
     // }
-    const {loading , rooms} = useSelector(state => state.rooms) ;
-    const dispatch = useDispatch() ;
 
-    const roomss = rooms ;
+    const alert = useAlert() ;
+
+    const dispatch = useDispatch() ;
+    const {loading , rooms , error} = useSelector(state => state.rooms) ;
+
     useEffect( () => {
-        console.log('this is from home') ;
-        console.log(rooms)
+        
+        if(error) {
+
+            return alert.error(error)
+        }
+
         dispatch(getAllRooms()) ;
-    } , [dispatch ])
+
+       
+    } , [dispatch , error  ])
     return (
-       <div> 
+        <Fragment>
+            {loading ? <Loader />:(
+        <Fragment>       <div> 
            <Header />
 <section class="home" id="home">
 
@@ -146,22 +156,9 @@ const Home = () => {
 
 <div class="box-container">
         {rooms.map(room => (
-            <Rooms key={room._id} image={room.photos[0].url} />
+            <Rooms key={room._id} data={room} />
         ))}
-   <Rooms image="assets/image/product_img11.jpg"/>
-   <Rooms image="assets/image/product_img10.jpg"/>
-    <Rooms image="assets/image/product_img9.jpg"/>
-    <Rooms image="assets/image/product_img8.jpg"/>
-    <Rooms image="assets/image/product_img7.jpg"/>
-    <Rooms image="assets/image/product_img6.jpg"/>
-    <Rooms image="assets/image/product_img5.jpg"/>
-
-    <Rooms image="assets/image/product_img4.jpg"/>
-
-    <Rooms image="assets/image/product_img3.jpg"/>
-    <Rooms image="assets/image/product_img1.jpg"/>
-    
-    <Rooms image="assets/image/product_img12.jpg"/>
+   
 </div>
 
 </section>
@@ -296,6 +293,10 @@ const Home = () => {
 
     <Footer />
 </div>
+</Fragment>
+)}
+</Fragment>
+
     )
 }
 
